@@ -79,7 +79,8 @@ const get_from_davinci_model = async (
     prompt,
     { max_tokens = 100, temperature = 0.7 } = {}
 ) => {
-    const OPENAI_API_KEY = "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";
+    // const OPENAI_API_KEY = "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";
+    const OPENAI_API_KEY = "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";
 
     const configuration = new Configuration({
         apiKey: OPENAI_API_KEY,
@@ -119,6 +120,7 @@ app.get("/test-questions", async (req, res) => {
         // Pass the promt to this function to get the answer
         data = await get_from_davinci_model(prompt, {
             max_tokens: 200,
+            temperature: 1
         });
 
         res.status(200).json(data);
@@ -155,14 +157,15 @@ app.post("/test-band-score", async (req, res) => {
         console.log("Question", question)
         console.log("ANswer", answer)
         // Prompt for the GPT-3 model
-        const prompt = `Assume you have just evaluated an IELTS Writing Task 2 essay. Please provide the band score (ranging from 0 to 9) for this essay, along with a brief summary of the main strengths and weaknesses of the essay that contributed to this score. Check various parameters like grammar, sentence structure, vocabulary, and coherence then evaluate the given essay.And the essay should be in minumum 250 words to 280 words to have a good band score.
-    Question : '${question}'
-    Essay : '${answer}'
-    Band Score :`;
+        const prompt = `Act as a certified IELTS examiner and evaluate the bellow essay based on the IELTS assessment criteria for writing task 1. Give suggestion to improve the essay.
+        Question: "${question}"
+        Essay: "${answer}"
+        Band Score:`;
 
         // Pass the promt to this function to get the answer
         data = await get_from_davinci_model(prompt, {
             max_tokens: 400,
+            temperature: 0
         });
 
         band_score = data?.data[0];
